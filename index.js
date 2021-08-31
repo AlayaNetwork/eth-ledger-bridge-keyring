@@ -3,7 +3,7 @@ const HDKey = require('hdkey')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
-const hdPathString = `m/44'/60'/0'`
+const hdPathString = `m/44'/486'/0'`
 const type = 'Ledger Hardware'
 const BRIDGE_URL = 'https://metamask.github.io/eth-ledger-bridge-keyring'
 const pathBase = 'm'
@@ -120,6 +120,7 @@ class LedgerBridgeKeyring extends EventEmitter {
         if (success) {
           this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex')
           this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex')
+          payload.address = payload.address.replace(/^0x/i, '')
           resolve(payload.address)
         } else {
           reject(payload.error || 'Unknown error')
@@ -437,11 +438,11 @@ class LedgerBridgeKeyring extends EventEmitter {
 
   _getPathForIndex (index) {
     // Check if the path is BIP 44 (Ledger Live)
-    return this._isBIP44() ? `m/44'/60'/${index}'/0/0` : `${this.hdPath}/${index}`
+    return this._isBIP44() ? `m/44'/486'/0'/0/${index}` : `${this.hdPath}/${index}`
   }
 
   _isBIP44 () {
-    return this.hdPath === `m/44'/60'/0'/0/0`
+    return this.hdPath === `m/44'/486'/0'/0/0`
   }
 
   _toLedgerPath (path) {
