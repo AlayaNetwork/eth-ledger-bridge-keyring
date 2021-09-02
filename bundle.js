@@ -55,7 +55,7 @@ var LedgerBridge = function () {
 
                     switch (action) {
                         case 'ledger-unlock':
-                            _this.unlock(replyAction, params.hdPath);
+                            _this.unlock(replyAction, params.hdPath, params.display);
                             break;
                         case 'ledger-sign-transaction':
                             _this.signTransaction(replyAction, params.hdPath, params.tx);
@@ -156,9 +156,11 @@ var LedgerBridge = function () {
     }, {
         key: 'unlock',
         value: async function unlock(replyAction, hdPath) {
+            var display = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
             try {
                 await this.makeApp();
-                var res = await this.app.getAddress(hdPath, false, true);
+                var res = await this.app.getAddress(hdPath, display, true);
                 this.sendMessageToExtension({
                     action: replyAction,
                     success: true,
@@ -313,7 +315,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 (async function () {
     var bridge = new _ledgerBridge2.default();
 })();
-console.log('MetaMask < = > Ledger Bridge initialized from ' + window.location + '!');
+console.log('Samurai < = > Ledger Bridge initialized from ' + window.location + '!');
 
 },{"./ledger-bridge":1}],3:[function(require,module,exports){
 "use strict";

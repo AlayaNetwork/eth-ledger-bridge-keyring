@@ -26,7 +26,7 @@ export default class LedgerBridge {
 
                 switch (action) {
                     case 'ledger-unlock':
-                        this.unlock(replyAction, params.hdPath)
+                        this.unlock(replyAction, params.hdPath, params.display)
                         break
                     case 'ledger-sign-transaction':
                         this.signTransaction(replyAction, params.hdPath, params.tx)
@@ -116,10 +116,10 @@ export default class LedgerBridge {
         }
     }
 
-    async unlock (replyAction, hdPath) {
+    async unlock (replyAction, hdPath, display = false) {
         try {
             await this.makeApp()
-            const res = await this.app.getAddress(hdPath, false, true)
+            const res = await this.app.getAddress(hdPath, display, true)
             this.sendMessageToExtension({
                 action: replyAction,
                 success: true,
