@@ -5,7 +5,7 @@ const sigUtil = require('eth-sig-util')
 
 const hdPathString = `m/44'/486'/0'`
 const type = 'Ledger Hardware'
-const BRIDGE_URL = 'https://alayanetwork.github.io/eth-ledger-bridge-keyring'
+const BRIDGE_URL = 'https://platonnetwork.github.io/samurai-eth-ledger-bridge-keyring'
 const pathBase = 'm'
 const MAX_INDEX = 1000
 const NETWORK_API_URLS = {
@@ -104,7 +104,7 @@ class LedgerBridgeKeyring extends EventEmitter {
     this.hdPath = hdPath
   }
 
-  unlock (hdPath) {
+  unlock (hdPath, display =false) {
     if (this.isUnlocked() && !hdPath) {
       return Promise.resolve('already unlocked')
     }
@@ -114,6 +114,7 @@ class LedgerBridgeKeyring extends EventEmitter {
         action: 'ledger-unlock',
         params: {
           hdPath: path,
+          display: display,
         },
       },
       ({ success, payload }) => {
@@ -264,13 +265,13 @@ class LedgerBridgeKeyring extends EventEmitter {
     })
   }
 
-  async unlockAccountByAddress (address) {
+  async unlockAccountByAddress (address, display = false) {
     const checksummedAddress = ethUtil.toChecksumAddress(address)
     if (!Object.keys(this.accountDetails).includes(checksummedAddress)) {
       throw new Error(`Ledger: Account for address '${checksummedAddress}' not found`)
     }
     const { hdPath } = this.accountDetails[checksummedAddress]
-    const unlockedAddress = await this.unlock(hdPath)
+    const unlockedAddress = await this.unlock(hdPath, display)
 
     // unlock resolves to the address for the given hdPath as reported by the ledger device
     // if that address is not the requested address, then this account belongs to a different device or seed
