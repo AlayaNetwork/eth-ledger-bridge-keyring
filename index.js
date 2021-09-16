@@ -176,6 +176,9 @@ class LedgerBridgeKeyring extends EventEmitter {
   }
 
   removeAccount (address) {
+    if (ethUtil.isValidAddress(address)) {
+      address = ethUtil.toBech32Address('lat', address)
+    }
     if (!this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())) {
       throw new Error(`Address ${address} not found in this keyring`)
     }
